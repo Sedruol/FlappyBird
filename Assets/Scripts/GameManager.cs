@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject gameOverText;
+    [SerializeField] private TMP_Text scoreText;
+    private int score; 
     public bool isGameOver = false;
     public static GameManager Instance { get; private set; }
     private void Awake()
@@ -19,6 +22,11 @@ public class GameManager : MonoBehaviour
     {
         isGameOver = true;
         gameOverText.SetActive(true);
+    }
+    public void IncreaseScore()
+    {
+        score++;
+        scoreText.text = score.ToString();
     }
     void Start()
     {
