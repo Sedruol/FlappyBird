@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class ObstaclesPool : MonoBehaviour
@@ -9,7 +10,6 @@ public class ObstaclesPool : MonoBehaviour
     [SerializeField] private float minYPosition = -2f;
     [SerializeField] private float maxYPosition = 3f;
     private GameObject[] obstacles;
-    private float timeElapsed;
     private int obstacleCount;
     private float ySpawnPosition;
     private Vector2 spawnPosition;
@@ -21,17 +21,16 @@ public class ObstaclesPool : MonoBehaviour
             obstacles[i] = Instantiate(obstaclePrefab, transform);
             obstacles[i].SetActive(false);
         }
+        StartCoroutine(SpawnObstacles());
     }
-
-    // Update is called once per frame
-    void Update()
+    private IEnumerator SpawnObstacles()
     {
-        timeElapsed += Time.deltaTime;
-        if (timeElapsed > spawnTime && !GameManager.Instance.isGameOver) SpawnObstacle();
+        SpawnObstacle();
+        yield return new WaitForSeconds(spawnTime);
+        if (!GameManager.Instance.isGameOver) StartCoroutine(SpawnObstacles());
     }
-    private  void SpawnObstacle()
+    private void SpawnObstacle()
     {
-        timeElapsed = 0f;
         ySpawnPosition = Random.Range(minYPosition, maxYPosition);
         spawnPosition = new Vector2(xSpawnPosition, ySpawnPosition);
         obstacles[obstacleCount].transform.position = spawnPosition;
@@ -39,8 +38,6 @@ public class ObstaclesPool : MonoBehaviour
             obstacles[obstacleCount].SetActive(true);
         obstacleCount++;
         if (obstacleCount == poolSize)
-        {
             obstacleCount = 0;
-        }
     }
 }

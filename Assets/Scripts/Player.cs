@@ -1,3 +1,4 @@
+using UnityEngine.InputSystem;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -11,12 +12,9 @@ public class Player : MonoBehaviour
         rbPlayer = GetComponent<Rigidbody2D>();
         animatorPlayer = GetComponent<Animator>();
     }
-    void Update()
+    public void Move(InputAction.CallbackContext callbackContext)
     {
-        if (Input.GetMouseButtonDown(0) && !isDead)
-        {
-            Flap();
-        }
+        if (!isDead && callbackContext.performed) Flap();
     }
 
     private void Flap()

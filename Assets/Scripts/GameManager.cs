@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 using UnityEngine;
 using TMPro;
 
@@ -8,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject gameOverText;
     [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text restartText;
     private int score; 
     public bool isGameOver = false;
     public static GameManager Instance { get; private set; }
@@ -21,6 +21,12 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         isGameOver = true;
+#if UNITY_STANDALONE
+        restartText.text = "Left click to restart";
+#endif
+#if UNITY_ANDROID
+        restartText.text = "Touch to restart";
+#endif
         gameOverText.SetActive(true);
     }
     public void IncreaseScore()
@@ -28,20 +34,9 @@ public class GameManager : MonoBehaviour
         score++;
         scoreText.text = score.ToString();
     }
-    void Start()
+    public void RestartGame(InputAction.CallbackContext callbackContext)
     {
-        
-    }
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0) && isGameOver)
-        {
-            RestartGame();
-        }
-    }
-
-    private void RestartGame()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        if (isGameOver && callbackContext.performed)
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
